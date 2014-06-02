@@ -61,4 +61,17 @@ describe Action do
 
         sub.info.should_not == nil
     end
+
+    it 'runs the sub-sub action with default options' do
+        puts "SUB SUB"
+        act = TopAction.new ['sub_action', 'sub_sub_action']
+        act.run
+        act.info.should == nil
+
+        sub = act.subactions.first
+        sub_sub = sub.subactions.first
+
+        sub.info.should == nil
+        sub_sub.info.should_not == nil
+    end
 end
