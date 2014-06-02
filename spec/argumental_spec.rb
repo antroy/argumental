@@ -1,4 +1,3 @@
-require 'argumental'
 require 'spec_helper'
 
 class SubSubAction < Action
@@ -42,7 +41,46 @@ class TopAction < Action
     end
 end
 
+class TestAction < Action
+    attr_reader :info, :subactions
+    attr_accessor :args
+
+    def initialize(name, subcommands=[], options=[], args=[])
+        super name, "Desc for #{name}", args
+        @subactions.concat subcommands
+        @option_definitions = options
+    end
+
+    def _run
+        @info = @options
+    end
+end
+
 describe Action do
+	context 'Two subcommands no nesting' do
+		subject { 
+            sub1 = TestAction.new "sub1", [], [{name: :sub_one, description: "Sub One", default: true}]
+            sub2 = TestAction.new "sub2", [], [{name: :sub_two, description: "Sub Two", default: true}]
+            TestAction.new "topper", [sub1, sub2]
+        }
+
+        it 'can see default options in the first subcommand' do
+            subject.args = ['sub1']
+            subject.run
+            first_sub = subject.subactions.first
+            puts "SUB: #{first_sub.name}"
+            first_sub.info[:sub_one].should == true
+        end
+
+        it 'can see default options in the second subcommand' do
+            subject.args = ['sub2']
+            subject.run
+            second_sub = subject.subactions[1]
+            puts "SUB: #{second_sub.name}"
+            second_sub.info[:sub_two].should == true
+        end
+    end
+
     it 'runs the top level action with default options' do
         puts "TOP"
         act = TopAction.new []
