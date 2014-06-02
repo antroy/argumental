@@ -1,4 +1,3 @@
-require 'argumental'
 require 'spec_helper'
 
 class SubSubAction < Action

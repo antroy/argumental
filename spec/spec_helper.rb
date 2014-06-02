@@ -1,5 +1,5 @@
 $:.unshift File.expand_path('..', __FILE__)
-$:.unshift File.expand_path('../../lib', __FILE__)
+$:.unshift File.expand_path('../lib', __FILE__)
 
 require 'rubygems'
 require 'bundler/setup'
@@ -11,6 +11,7 @@ SimpleCov.start do
 end
 
 require 'trollop'
+require 'argumental'
 
 RSpec.configure do |config|
 	config.before(:each){
