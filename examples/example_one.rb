@@ -25,11 +25,16 @@ end
 
 class BobAction < Action
     def initialize
-        super "bob_action", "Do Bob stuff"
+        super("bob_action", "Do Bob stuff", ARGV, '1.0.0')
         @option_definitions = [
-            {name: :do_stuff, description: "Set if you want to do stuff"}
+            {name: :do_stuff, description: "Set if you want to do stuff"},
+            {name: :mandatory, description: "Required"},
         ]
         @subactions << SubAction.new
+    end
+
+    def validate
+        raise "No mandatory option" unless @options[:mandatory]
     end
 
     def _run
