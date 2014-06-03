@@ -63,24 +63,21 @@ class Action
         return @options if @options
 
         myself = self
-        @options, @subaction = Trollop::with_standard_exception_handling(parser) do
-            options = @parser.parse myself.args
+        Trollop::with_standard_exception_handling(parser) do
+            @options = @parser.parse myself.args
             begin
                 validate unless @completion_mode
             rescue
                 raise Trollop::HelpNeeded
             end
 
-            act = nil
             unless myself.args.empty?
                 sub_command = myself.args.shift
-                act = @subactions.find{|comm| comm.name == sub_command}
-                raise Trollop::HelpNeeded unless act
+                @subaction = @subactions.find{|comm| comm.name == sub_command}
+                raise Trollop::HelpNeeded unless @subaction
             end
-
-            out = [options, act]
-            out
         end
+
         @options
     end
 
