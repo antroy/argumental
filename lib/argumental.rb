@@ -4,12 +4,13 @@ class Action
     attr_reader :name, :args
     attr_writer :option_definitions
 
-    def initialize(name, help, args = ARGV)
+    def initialize(name, help, args = ARGV, version=nil)
         @name = name
         @help = help
         @option_definitions = []
         @subactions = []
         @args = args
+        @version = version
         @completion_mode = false
     end
 
@@ -33,9 +34,11 @@ class Action
         help_text = @help
         the_subcommands = @subactions
         sub_help = @subactions.empty? ? "" : "\n\nSub Actions: " + @subactions.map{|sa| sa.name}.join(', ')
+        app_version = @version
 
         @parser = Trollop::Parser.new do
             banner "#{help_text}#{sub_help}\n " if help_text and not @completion_mode
+            version app_version if app_version
 
             opt :commands, "Display all commands", short: :none
             opt :man, "Display manual page", short: :none

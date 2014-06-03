@@ -25,7 +25,7 @@ end
 
 class BobAction < Action
     def initialize
-        super "bob_action", "Do Bob stuff"
+        super("bob_action", "Do Bob stuff", ARGV, '1.0.0')
         @option_definitions = [
             {name: :do_stuff, description: "Set if you want to do stuff"}
         ]

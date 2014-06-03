@@ -1,0 +1,19 @@
+#!/bin/bash
+
+GNU_SED_CMD=sed
+
+. set_tool_names
+
+new_version=$1
+base_dir=$2
+date=$(date +'%Y-%m-%d')
+
+gemspec=argumental.gemspec
+version_file=lib/argumental/version.rb
+
+"$GNU_SED_CMD" -i "s/VERSION\s*=\s*.*\$/VERSION = \"${new_version}\"/" "${base_dir}/${version_file}"
+"$GNU_SED_CMD" -i "s/\(\s*s\.date\s*=\s*['\"]\).*\(['\"]\)/\1${date}\2/" "${base_dir}/$gemspec"
+
+git commit -am "Set version to ${new_version} in ${version_file}"
+gem build "$gemspec"
+git relnotes
