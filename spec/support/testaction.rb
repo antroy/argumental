@@ -13,3 +13,4 @@ class TestAction < Action
         @info = @options
     end
 end
+ 
