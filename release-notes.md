@@ -1,3 +1,8 @@
+Version 1.2.1
+-------------
+
+- Set version to 1.2.1 in lib/argumental/version.rb (3a94d69 Robin Bowes)
+
 Version 1.2.0
 -------------
 
