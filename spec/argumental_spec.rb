@@ -61,7 +61,7 @@ describe Action do
     end
     context 'command version' do
         context 'when specified' do
-            subject { VersionedAction.new 'versioned', [] }
+            subject { VersionedAction.new 'version', [] }
             it 'version is set' do
                 subject.instance_variable_get(:@version).should == '1.0.0'
             end
