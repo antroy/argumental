@@ -68,8 +68,8 @@ describe Action do
         end
         context 'when not-specified' do           
             subject { NonVersionedAction.new 'versioned', [] }
-            it 'version is set' do
-                subject.instance_variable_get(:@version).should == '1.0.0'
+            it 'version is nil' do
+                subject.instance_variable_get(:@version).should == nil
             end 
         end
     end
