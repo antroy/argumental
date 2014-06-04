@@ -11,3 +11,5 @@ group :test do
 	gem 'semverly',         :require => false
 	gem 'rspec', '~> 2.14', :require => false
 end
+
+gem 'rake', group: [:development,:test]
