@@ -3,6 +3,7 @@ require 'trollop'
 class Action
     attr_reader :name, :args
     attr_writer :option_definitions
+    attr_accessor :parent
 
     def initialize(name, help, args = ARGV, version=nil)
         @name = name
@@ -12,6 +13,13 @@ class Action
         @args = args
         @version = version
         @completion_mode = false
+        @parent = nil
+    end
+
+    def add_subaction(action)
+        @subactions << action
+        action.parent == self
+        action.args = @args
     end
 
     def commands(depth=0)
@@ -65,6 +73,7 @@ class Action
         myself = self
         Trollop::with_standard_exception_handling(parser) do
             @options = @parser.parse myself.args
+
             unless myself.args.empty?
                 sub_command = myself.args.shift
                 @subaction = @subactions.find{|comm| comm.name == sub_command}
@@ -92,15 +101,16 @@ class Action
             exit 0
         end
 
+
         begin
             validate unless @completion_mode
         rescue StandardError => ex
             puts "ERROR: #{ex.message}"
-
+            parser.educate
         end
 
         if @subaction
-            @subaction.options.concat options
+            @subaction.options.merge!(options)
             @subaction.run
         else
             _run
