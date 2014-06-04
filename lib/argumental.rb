@@ -65,12 +65,6 @@ class Action
         myself = self
         Trollop::with_standard_exception_handling(parser) do
             @options = @parser.parse myself.args
-            begin
-                validate unless @completion_mode
-            rescue
-                raise Trollop::HelpNeeded
-            end
-
             unless myself.args.empty?
                 sub_command = myself.args.shift
                 @subaction = @subactions.find{|comm| comm.name == sub_command}
@@ -96,6 +90,13 @@ class Action
         if options[:commands]
             commands
             exit 0
+        end
+
+        begin
+            validate unless @completion_mode
+        rescue StandardError => ex
+            puts "ERROR: #{ex.message}"
+
         end
 
         if @subaction
