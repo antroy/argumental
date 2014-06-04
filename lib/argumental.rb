@@ -17,6 +17,11 @@ class Action
         @presets = {}
     end
 
+    # check if the option with the supplied name is in the supplied option hash
+    def check_option(opt, opts, msg = "#{opt.to_s} option must be specified")
+        raise msg if opts[opt] == nil
+    end
+
     def add_subaction(action)
         @subactions << action
         action.parent = self
