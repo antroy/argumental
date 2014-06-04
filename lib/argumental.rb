@@ -1,9 +1,9 @@
 require 'trollop'
 
 class Action
-    attr_reader :name, :args
+    attr_reader :name
     attr_writer :option_definitions
-    attr_accessor :parent
+    attr_accessor :parent, :args
 
     def initialize(name, help, args = ARGV, version=nil)
         @name = name
@@ -18,7 +18,7 @@ class Action
 
     def add_subaction(action)
         @subactions << action
-        action.parent == self
+        action.parent = self
         action.args = @args
     end
 
