@@ -1,7 +1,13 @@
-Version 1.2.1
+Version 1.3.0
 -------------
 
-- Set version to 1.2.1 in lib/argumental/version.rb (3a94d69 Robin Bowes)
+- Set version to 1.3.0 in lib/argumental/version.rb (bb999a8 Anthony Roy)
+- Added more tests and fixed nesting (c294e69 Anthony Roy)
+- Moved validation code (c5e31c4 Anthony Roy)
+- Fix travis-ci / bundle env (7671952 David Collom)
+- fix broken test logic (56fc885 David Collom)
+- Add in Travis CI support (02c24fa David Collom)
+- Add in rspec testing (dc5cc7a David Collom)
 
 Version 1.2.0
 -------------
