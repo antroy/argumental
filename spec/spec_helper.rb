@@ -13,8 +13,21 @@ end
 require 'trollop'
 require 'argumental'
 
+def capture_stdout(&block)
+  original_stdout = $stdout
+  $stdout = fake = StringIO.new
+  begin
+    yield
+  ensure
+    $stdout = original_stdout
+  end
+  fake.string
+end
+
 RSpec.configure do |config|
 	config.before(:each){
 		# Don't need anything yet.
 	}
 end
+
+
