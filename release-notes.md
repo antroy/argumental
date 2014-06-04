@@ -1,3 +1,10 @@
+Version 1.4.0
+-------------
+
+- Set version to 1.4.0 in lib/argumental/version.rb (8c346ac Anthony Roy)
+- Added preset functionality and tests for this. (6adc3bf Anthony Roy)
+- Fixed bugs in add_subaction command (d9ed748 Anthony Roy)
+
 Version 1.3.0
 -------------
 
