@@ -1,9 +1,9 @@
 require 'trollop'
 
 class Action
-    attr_reader :name, :args
+    attr_reader :name
     attr_writer :option_definitions
-    attr_accessor :parent
+    attr_accessor :parent, :args
 
     def initialize(name, help, args = ARGV, version=nil)
         @name = name
@@ -14,12 +14,34 @@ class Action
         @version = version
         @completion_mode = false
         @parent = nil
+        @presets = {}
     end
 
     def add_subaction(action)
         @subactions << action
-        action.parent == self
+        action.parent = self
         action.args = @args
+    end
+
+    def apply_presets(presets)
+        raise "Cannot apply presets on sub actions" if @parent
+
+        @presets.merge! presets
+    end
+
+    def presets
+        @parent ? @parent.presets : @presets
+    end
+
+    def apply_presets_to_definitions
+        @option_definitions.each do |opt|
+            name = opt[:name]
+            if presets.has_key?(name.to_s)
+                opt[:default] = presets[name.to_s]
+            elsif presets.has_key?(name.to_sym)
+                opt[:default] = presets[name.to_sym]
+            end
+        end
     end
 
     def commands(depth=0)
@@ -38,7 +60,8 @@ class Action
     def parser
         return @parser if @parser
 
-        opt_defs = @option_definitions
+        opt_defs = apply_presets_to_definitions
+        
         help_text = @help
         the_subcommands = @subactions
         sub_help = @subactions.empty? ? "" : "\n\nSub Actions: " + @subactions.map{|sa| sa.name}.join(', ')
@@ -72,7 +95,8 @@ class Action
 
         myself = self
         Trollop::with_standard_exception_handling(parser) do
-            @options = @parser.parse myself.args
+            parser_opts = @parser.parse myself.args
+            @options = parser_opts
 
             unless myself.args.empty?
                 sub_command = myself.args.shift
