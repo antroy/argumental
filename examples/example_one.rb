@@ -1,6 +1,6 @@
 require 'argumental'
 
-class SubSubAction < Action
+class SubSubAction < Argumental::Action
     def initialize
         super "sub_sub_action", "This should be deeply nested"
     end
@@ -11,7 +11,7 @@ class SubSubAction < Action
     end
 end
 
-class SubAction < Action
+class SubAction < Argumental::Action
     def initialize
         super "sub_action", "This should be nested"
         @subactions << SubSubAction.new
@@ -23,7 +23,7 @@ class SubAction < Action
     end
 end
 
-class BobAction < Action
+class BobAction < Argumental::Action
     def initialize
         super("bob_action", "Do Bob stuff", ARGV, '1.0.0')
         @option_definitions = [
