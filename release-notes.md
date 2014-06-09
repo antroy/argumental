@@ -1,3 +1,9 @@
+Version 1.5.1
+-------------
+
+- Set version to 1.5.1 in lib/argumental/version.rb (ef120bb Robin Bowes)
+- Exit on validation failure (1bd3a1f Robin Bowes)
+
 Version 1.5.0
 -------------
 
