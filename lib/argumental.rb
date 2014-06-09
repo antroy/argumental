@@ -137,6 +137,7 @@ module Argumental
             rescue StandardError => ex
                 puts "ERROR: #{ex.message}"
                 parser.educate
+                exit 1
             end
 
             if @subaction
