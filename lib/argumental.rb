@@ -29,7 +29,7 @@ module Argumental
             action.args = @args
         end
 
-    def apply_presets(preset_hash)
+    def set_default_options(preset_hash)
         presets.merge! preset_hash
         end
 
@@ -37,7 +37,7 @@ module Argumental
             @parent ? @parent.presets : @presets
         end
 
-    def apply_presets_to_options
+    def apply_defaults_to_options
         options.keys.each do |key|
             unless options["#{key}_given".to_sym]
                 if presets.has_key?(key.to_s)
@@ -123,7 +123,7 @@ module Argumental
             options
         pre_validate
 
-        apply_presets_to_options
+        apply_defaults_to_options
 
             if options[:man]
                 manual
