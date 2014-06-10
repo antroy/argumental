@@ -1,5 +1,5 @@
 
-class VersionedAction < Action
+class VersionedAction < Argumental::Action
     attr_reader :info, :subactions
     attr_accessor :args
 

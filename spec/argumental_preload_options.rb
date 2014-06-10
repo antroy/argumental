@@ -5,7 +5,7 @@ require 'support/testaction'
 require 'support/versioned_action'
 require 'support/non_versioned_action'
 
-describe Action do
+describe Argumental::Action do
 
     context 'Top level options are available' do
 		subject { 

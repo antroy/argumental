@@ -5,7 +5,7 @@ require 'support/testaction'
 require 'support/versioned_action'
 require 'support/non_versioned_action'
 
-describe Action do
+describe Argumental::Action do
 
     context 'Top level options are available' do
 		subject { 
@@ -32,7 +32,7 @@ describe Action do
             subject.args = ['--top', 'sub1']
             subject.run
             subject.subactions.first.info[:top].should == true
-        end
+       end
 
         it 'should be turtles all the way down...' do
             puts "Turtles"
