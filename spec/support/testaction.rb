@@ -9,9 +9,17 @@ class TestAction < Action
         @option_definitions = options
     end
 
+    def set_pre_validate(&block)
+        @pre_run_block = block
+    end
+
     def args=(new_args)
         @args = new_args
         @subactions.each{|sub| sub.args = new_args}
+    end
+
+    def pre_validate
+        @block.call if @block
     end
 
     def _run
