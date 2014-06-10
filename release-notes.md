@@ -1,3 +1,9 @@
+Version 1.6.2
+-------------
+
+- Set version to 1.6.2 in lib/argumental/version.rb (368cdc2 Robin Bowes)
+- Rename method correctly (898ee4a Robin Bowes)
+
 Version 1.6.1
 -------------
 
