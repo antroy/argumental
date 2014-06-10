@@ -29,7 +29,7 @@ module Argumental
             action.args = @args
         end
 
-    def set_default_options(preset_hash)
+    def set_option_defaults(preset_hash)
         presets.merge! preset_hash
         end
 
