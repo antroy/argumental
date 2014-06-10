@@ -5,7 +5,7 @@ require 'support/testaction'
 require 'support/versioned_action'
 require 'support/non_versioned_action'
 
-describe Action do
+describe Argumental::Action do
 	context 'Two subcommands no nesting' do
 		subject { 
             sub1 = TestAction.new "sub1", [], [{name: :sub_one, description: "Sub One", default: true}]

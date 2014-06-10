@@ -1,4 +1,4 @@
-class NoAction < Action
+class NoAction < Argumental::Action
     attr_reader :info, :subactions
     def initialize(args)
         super "top_action", "Do stuff", args

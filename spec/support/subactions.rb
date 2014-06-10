@@ -1,4 +1,4 @@
-class SubSubAction < Action
+class SubSubAction < Argumental::Action
     attr_reader :info, :subactions
     def initialize(args)
         super "sub_sub_action", "This should be deeply nested", args
@@ -11,7 +11,7 @@ class SubSubAction < Action
 end
 
 
-class SubAction < Action
+class SubAction < Argumental::Action
     attr_reader :info, :subactions
     def initialize(args)
         super "sub_action", "This should be nested", args
@@ -24,7 +24,7 @@ class SubAction < Action
     end
 end
 
-class TopAction < Action
+class TopAction < Argumental::Action
     attr_reader :info, :subactions
     def initialize(args)
         super "top_action", "Do stuff", args

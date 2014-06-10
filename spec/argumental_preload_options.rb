@@ -5,7 +5,7 @@ require 'support/testaction'
 require 'support/versioned_action'
 require 'support/non_versioned_action'
 
-describe Action do
+describe Argumental::Action do
 
     context 'Top level options are available' do
 		subject { 
@@ -39,6 +39,30 @@ describe Action do
             subject.apply_presets({top: 'A Symbol Key'})
             subject.run
             subject.info[:top].should == 'Command line magic'
+        end
+
+        it 'should have dynamic preset use depending on option input' do
+            subject.args = ['--top', 'Command line magic']
+            subject.set_pre_validate do
+                if options[:top]
+                    apply_presets({sub1: 'Dynamically assigned'})
+                end
+            end
+            subject.run
+            subject.info[:top].should == 'Command line magic'
+            subject.info[:sub1].should == 'Dynamically assigned'
+        end
+
+        it 'should have dynamic not preset since dependant option missing' do
+            subject.args = []
+            subject.set_pre_validate do
+                if options[:top]
+                    apply_presets({sub1: 'Dynamically assigned'})
+                end
+            end
+            subject.run
+            subject.info[:top].should == 'nothing'
+            subject.info[:sub1].should == false
         end
 
         it 'should have default options available from subcommands' do

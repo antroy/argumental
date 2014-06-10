@@ -1,3 +1,31 @@
+Version 1.6.0
+-------------
+
+- Set version to 1.6.0 in lib/argumental/version.rb (1cc0ac4 Anthony Roy)
+- Changed how presets are loaded (fa465ec Anthony Roy)
+- Release Notes updated (f0d5bc8 Robin Bowes)
+- Set version to 1.5.1 in lib/argumental/version.rb (ef120bb Robin Bowes)
+- Exit on validation failure (1bd3a1f Robin Bowes)
+- Release Notes updated (a2b5dda Robin Bowes)
+- Set version to 1.5.0 in lib/argumental/version.rb (cd64716 Robin Bowes)
+- Name space the Action class (3086f56 Robin Bowes)
+- Add check_option method (9501713 Robin Bowes)
+- Release Notes updated (2df9852 Robin Bowes)
+- Set version to 1.2.1 in lib/argumental/version.rb (3a94d69 Robin Bowes)
+
+Version 1.5.1
+-------------
+
+- Set version to 1.5.1 in lib/argumental/version.rb (ef120bb Robin Bowes)
+- Exit on validation failure (1bd3a1f Robin Bowes)
+
+Version 1.5.0
+-------------
+
+- Set version to 1.5.0 in lib/argumental/version.rb (cd64716 Robin Bowes)
+- Name space the Action class (3086f56 Robin Bowes)
+- Add check_option method (9501713 Robin Bowes)
+
 Version 1.4.0
 -------------
 
