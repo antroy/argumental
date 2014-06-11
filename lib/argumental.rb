@@ -24,7 +24,6 @@ module Argumental
                 names = @subactions.map {|sa| sa.name}
                 name != arg  && ! names.include?(arg)
             end
-            puts "Class: #{self.class}; Opts: #{out}"
             out
         end
 
@@ -144,7 +143,6 @@ module Argumental
             return _opt_cache if _opt_cache
 
             myself = self
-            puts "Parsing from #{myself.name}"
             Trollop::with_standard_exception_handling(parser) do
                 parser_opts = @parser.parse myself.args
                 myself._opt_cache = parser_opts
@@ -154,6 +152,13 @@ module Argumental
         end
 
         def pre_validate
+        end
+
+        def _pre_validate
+            if @parent
+                @parent._pre_validate
+            end
+            pre_validate
         end
 
         def validate
@@ -175,7 +180,7 @@ module Argumental
                 current_subaction.run
             else
                 options
-                pre_validate
+                _pre_validate
 
                 apply_defaults_to_options
 
