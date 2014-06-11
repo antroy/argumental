@@ -31,6 +31,7 @@ describe Argumental::Action do
         it 'should have the top option set when passed in on commandline' do
             subject.args = ['--top', 'sub1']
             subject.run
+            puts "ZZZ: #{subject.info}"
             subject.subactions.first.info[:top].should == true
        end
 

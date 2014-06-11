@@ -29,6 +29,20 @@ class SubAction < Argumental::Action
     end
 end
 
+class SideAction < Argumental::Action
+    def initialize
+        super "side_action", "This should be nested alongside sub_action"
+        @option_definitions = [
+            {name: :side_option, short: 'q', description: "Side Option"},
+        ]
+    end
+
+    def _run
+        puts "Sideaction running"
+        puts "Side opts: #{options}"
+    end
+end
+
 class BobAction < Argumental::Action
     def initialize
         super("bob_action", "Do Bob stuff", ARGV, '1.0.0')
@@ -37,10 +51,11 @@ class BobAction < Argumental::Action
             {name: :mandatory, description: "Required"},
         ]
         add_subaction SubAction.new
+        add_subaction SideAction.new
     end
 
     def validate
-        raise "No 'mandatory' option provided" unless @options[:mandatory]
+        raise "No 'mandatory' option provided" unless options[:mandatory]
     end
 
     def _run

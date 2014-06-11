@@ -4,7 +4,7 @@ module Argumental
     class Action
         attr_reader :name
         attr_writer :option_definitions
-        attr_accessor :parent, :args
+        attr_accessor :parent
 
         def initialize(name, help, args = ARGV, version=nil)
             @name = name
@@ -19,7 +19,13 @@ module Argumental
         end
 
         def args
-            @_args.find_all{|arg| ! @subactions.map{|sa| sa.name}.include?(arg)}
+            name = @name
+            out = @_args.find_all do |arg|
+                names = @subactions.map {|sa| sa.name}
+                name != arg  && ! names.include?(arg)
+            end
+            puts "Class: #{self.class}; Opts: #{out}"
+            out
         end
 
         def current_subaction
@@ -54,7 +60,7 @@ module Argumental
         end
 
         def option_definitions
-            out = @option_definitions
+            out = @option_definitions.map{|o| o.clone}
             out.concat @parent.option_definitions if @parent
             out
         end
@@ -78,24 +84,22 @@ module Argumental
 
         def manual(pre_commands=[])
             command_list = pre_commands + [@name]
+            puts "=" * 40
+            title = command_list.join(' / ').upcase
+            puts title
+            puts "-" * title.size
+            puts
             puts "#{command_list.join(' <options> ')} <options>\n\n"
             parser.educate
             puts
             @subactions.each{|act| act.manual(command_list)}
         end
 
-
-        # TODO: Need to:
-        # 1. Strip out all subcommands from args and store.
-        # 2. Fetch option defs from first subcommand.
-        # 3. Options needs to run the parent options.
-        # 4. Help needs to present the correct help text.
-
         def parser(parent_opt_defs = [])
+
             return @parser if @parser
 
             help_text = @help
-            sub_actions = @subactions
 
             sub_help = @subactions.empty? ? "" : "\n\nSub Actions: " + @subactions.map{|sa| sa.name}.join(', ')
             app_version = version
@@ -120,22 +124,46 @@ module Argumental
             @parser
         end
 
+        def _opt_cache=(opts)
+            if @parent
+                @parent._opt_cache=(opts)
+            else
+                @options = opts
+            end
+        end
+
+        def _opt_cache
+            if @parent
+                @parent._opt_cache
+            else
+                @options
+            end
+        end
+
         def options
-            return @options if @options
+            return _opt_cache if _opt_cache
 
             myself = self
+            puts "Parsing from #{myself.name}"
             Trollop::with_standard_exception_handling(parser) do
                 parser_opts = @parser.parse myself.args
-                @options = parser_opts
+                myself._opt_cache = parser_opts
             end
 
-            @options
+            _opt_cache
         end
 
         def pre_validate
         end
 
         def validate
+        end
+
+        def _validate
+            if @parent
+                @parent._validate
+            end
+            validate
         end
 
         def _run
@@ -162,7 +190,7 @@ module Argumental
                 end
 
                 begin
-                    validate unless @completion_mode
+                    _validate unless @completion_mode
                 rescue StandardError => ex
                     puts "\nERROR: #{ex.message}\n\n"
                     puts "Usage:\n"
