@@ -1,3 +1,9 @@
+Version 1.8.0
+-------------
+
+- Set version to 1.8.0 in lib/argumental/version.rb (e913ca7 Anthony Roy)
+- Fix for pre_validate recursion (9ce9d05 Anthony Roy)
+
 Version 1.7.0
 -------------
 
