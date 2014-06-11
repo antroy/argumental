@@ -1,3 +1,17 @@
+Version 1.7.0
+-------------
+
+- Set version to 1.7.0 in lib/argumental/version.rb (00410c5 Anthony Roy)
+- Removed some implementation specific tests. Commented out others and fixed others (c9a2ddb Anthony Roy)
+- Arbitrary option locations (462e2f0 Anthony Roy)
+- Formatting (2995036 Anthony Roy)
+- Release Notes updated (42888b5 Robin Bowes)
+- Set version to 1.6.2 in lib/argumental/version.rb (368cdc2 Robin Bowes)
+- Rename method correctly (898ee4a Robin Bowes)
+- Release Notes updated (89ff58a Robin Bowes)
+- Set version to 1.6.1 in lib/argumental/version.rb (747a82a Robin Bowes)
+- Rename apply_presets to set_default_options (5df1dcd Robin Bowes)
+
 Version 1.6.2
 -------------
 
