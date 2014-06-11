@@ -29,28 +29,28 @@ module Argumental
             action.args = @args
         end
 
-    def apply_presets(preset_hash)
-        presets.merge! preset_hash
+        def apply_presets(preset_hash)
+            presets.merge! preset_hash
         end
 
         def presets
             @parent ? @parent.presets : @presets
         end
 
-    def apply_presets_to_options
-        options.keys.each do |key|
-            unless options["#{key}_given".to_sym]
-                if presets.has_key?(key.to_s)
-                    options[key] = presets[key.to_s]
-                elsif presets.has_key?(key.to_sym)
-                    options[key] = presets[key.to_sym]
-                end
+        def apply_presets_to_options
+            options.keys.each do |key|
+                unless options["#{key}_given".to_sym]
+                    if presets.has_key?(key.to_s)
+                        options[key] = presets[key.to_s]
+                    elsif presets.has_key?(key.to_sym)
+                        options[key] = presets[key.to_sym]
+                    end
                 end
             end
         end
 
         def commands(depth=0)
-            puts ("    " * depth) + @name
+            puts "%s %s" % [("    " * depth), @name]
             @subactions.each{|act| act.commands(depth + 1)}
         end
 
@@ -69,7 +69,7 @@ module Argumental
             the_subcommands = @subactions
             sub_help = @subactions.empty? ? "" : "\n\nSub Actions: " + @subactions.map{|sa| sa.name}.join(', ')
             app_version = @version
-        opt_defs = @option_definitions
+            opt_defs = @option_definitions
 
             @parser = Trollop::Parser.new do
                 banner "#{help_text}#{sub_help}\n " if help_text and not @completion_mode
@@ -109,11 +109,11 @@ module Argumental
             @options
         end
 
-    def pre_validate
-    end
+        def pre_validate
+        end
 
-    def validate
-    end
+        def validate
+        end
 
         def _run
             puts "No action defined. Create a _run method in your subclass"
@@ -121,9 +121,9 @@ module Argumental
 
         def run
             options
-        pre_validate
+            pre_validate
 
-        apply_presets_to_options
+            apply_presets_to_options
 
             if options[:man]
                 manual
