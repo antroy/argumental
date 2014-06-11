@@ -11,13 +11,30 @@ module Argumental
             @help = help
             @option_definitions = []
             @subactions = []
-            @args = args
+            @_args = args
             @version = version
             @completion_mode = false
             @parent = nil
             @presets = {}
         end
 
+        def args
+            @_args.find_all{|arg| ! @subactions.map{|sa| sa.name}.include?(arg)}
+        end
+
+        def current_subaction
+            out = @subactions.find_all{|sa| @_args.include?(sa.name)}
+            raise "Can't invoke more than one subaction but #{out.join(", ")} provided." if out.size > 1
+            out.empty? ? nil : out.first
+        end
+
+        def version
+            if @parent
+                @parent.version 
+            else
+                @version
+            end
+        end
         # check if the option with the supplied name is in the supplied option hash
         def check_option(opt, opts, msg = "#{opt.to_s} option must be specified")
             raise msg if opts[opt] == nil
@@ -26,7 +43,6 @@ module Argumental
         def add_subaction(action)
             @subactions << action
             action.parent = self
-            action.args = @args
         end
 
         def set_option_defaults(preset_hash)
@@ -35,6 +51,12 @@ module Argumental
 
         def presets
             @parent ? @parent.presets : @presets
+        end
+
+        def option_definitions
+            out = @option_definitions
+            out.concat @parent.option_definitions if @parent
+            out
         end
 
         def apply_defaults_to_options
@@ -62,14 +84,22 @@ module Argumental
             @subactions.each{|act| act.manual(command_list)}
         end
 
-        def parser
+
+        # TODO: Need to:
+        # 1. Strip out all subcommands from args and store.
+        # 2. Fetch option defs from first subcommand.
+        # 3. Options needs to run the parent options.
+        # 4. Help needs to present the correct help text.
+
+        def parser(parent_opt_defs = [])
             return @parser if @parser
 
             help_text = @help
-            the_subcommands = @subactions
+            sub_actions = @subactions
+
             sub_help = @subactions.empty? ? "" : "\n\nSub Actions: " + @subactions.map{|sa| sa.name}.join(', ')
-            app_version = @version
-            opt_defs = @option_definitions
+            app_version = version
+            opt_defs = option_definitions
 
             @parser = Trollop::Parser.new do
                 banner "#{help_text}#{sub_help}\n " if help_text and not @completion_mode
@@ -85,7 +115,6 @@ module Argumental
                     option.delete :description
                     opt name, desc, option
                 end
-                stop_on the_subcommands.map{|comm| comm.name}
             end
 
             @parser
@@ -98,12 +127,6 @@ module Argumental
             Trollop::with_standard_exception_handling(parser) do
                 parser_opts = @parser.parse myself.args
                 @options = parser_opts
-
-                unless myself.args.empty?
-                    sub_command = myself.args.shift
-                    @subaction = @subactions.find{|comm| comm.name == sub_command}
-                    raise Trollop::HelpNeeded unless @subaction
-                end
             end
 
             @options
@@ -120,33 +143,33 @@ module Argumental
         end
 
         def run
-            options
-            pre_validate
-
-            apply_defaults_to_options
-
-            if options[:man]
-                manual
-                exit 0
-            end
-
-            if options[:commands]
-                commands
-                exit 0
-            end
-
-            begin
-                validate unless @completion_mode
-            rescue StandardError => ex
-                puts "ERROR: #{ex.message}"
-                parser.educate
-                exit 1
-            end
-
-            if @subaction
-                @subaction.options.merge!(options)
-                @subaction.run
+            if current_subaction
+                current_subaction.run
             else
+                options
+                pre_validate
+
+                apply_defaults_to_options
+
+                if options[:man]
+                    manual
+                    exit 0
+                end
+
+                if options[:commands]
+                    commands
+                    exit 0
+                end
+
+                begin
+                    validate unless @completion_mode
+                rescue StandardError => ex
+                    puts "\nERROR: #{ex.message}\n\n"
+                    puts "Usage:\n"
+                    parser.educate
+                    exit 1
+                end
+
                 _run
             end
         end

@@ -3,6 +3,9 @@ require 'argumental'
 class SubSubAction < Argumental::Action
     def initialize
         super "sub_sub_action", "This should be deeply nested"
+        @option_definitions = [
+            {name: :sub_sub_option, short: 'z', description: "Sub Sub Option"},
+        ]
     end
 
     def _run
@@ -14,7 +17,10 @@ end
 class SubAction < Argumental::Action
     def initialize
         super "sub_action", "This should be nested"
-        @subactions << SubSubAction.new
+        @option_definitions = [
+            {name: :sub_option, short: 'x', description: "Sub Option"},
+        ]
+        add_subaction SubSubAction.new
     end
 
     def _run
@@ -30,11 +36,11 @@ class BobAction < Argumental::Action
             {name: :do_stuff, description: "Set if you want to do stuff"},
             {name: :mandatory, description: "Required"},
         ]
-        @subactions << SubAction.new
+        add_subaction SubAction.new
     end
 
     def validate
-        raise "No mandatory option" unless @options[:mandatory]
+        raise "No 'mandatory' option provided" unless @options[:mandatory]
     end
 
     def _run
