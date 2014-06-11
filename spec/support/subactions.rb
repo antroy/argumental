@@ -6,7 +6,7 @@ class SubSubAction < Argumental::Action
     end
 
     def _run
-        @info = @options
+        @info = options
     end
 end
 
@@ -15,12 +15,12 @@ class SubAction < Argumental::Action
     attr_reader :info, :subactions
     def initialize(args)
         super "sub_action", "This should be nested", args
-        @subactions << SubSubAction.new(args)
+        add_subaction SubSubAction.new(args)
         @info = nil
     end
 
     def _run
-        @info = @options
+        @info = options
     end
 end
 
@@ -31,12 +31,12 @@ class TopAction < Argumental::Action
         @option_definitions = [
             {name: :do_stuff, description: "Set if you want to do stuff"}
         ]
-        @subactions << SubAction.new(args)
+        add_subaction SubAction.new(args)
         @info = nil
     end
 
     def _run
-        @info = @options
+        @info = options
     end
 end
 
