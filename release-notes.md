@@ -1,3 +1,15 @@
+Version 1.6.2
+-------------
+
+- Set version to 1.6.2 in lib/argumental/version.rb (368cdc2 Robin Bowes)
+- Rename method correctly (898ee4a Robin Bowes)
+
+Version 1.6.1
+-------------
+
+- Set version to 1.6.1 in lib/argumental/version.rb (747a82a Robin Bowes)
+- Rename apply_presets to set_default_options (5df1dcd Robin Bowes)
+
 Version 1.6.0
 -------------
 
