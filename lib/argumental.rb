@@ -15,7 +15,7 @@ module Argumental
             @version = version
             @completion_mode = false
             @parent = nil
-            @presets = {}
+            @configuration = {}
         end
 
         def args
@@ -50,12 +50,20 @@ module Argumental
             action.parent = self
         end
 
-        def set_option_defaults(preset_hash)
-            presets.merge! preset_hash
+        def symbolize(hash)
+            hash.inject({}) do |out,(k,v)| 
+                out[k.to_sym] = v
+                out
+            end
         end
 
-        def presets
-            @parent ? @parent.presets : @presets
+        def apply_config(preset_hash)
+            symbolized_hash = symbolize(preset_hash)
+            configuration.merge! symbolized_hash
+        end
+
+        def configuration
+            @parent ? @parent.configuration : @configuration
         end
 
         def option_definitions
@@ -64,16 +72,24 @@ module Argumental
             out
         end
 
-        def apply_defaults_to_options
-            options.keys.each do |key|
-                unless options["#{key}_given".to_sym]
-                    if presets.has_key?(key.to_s)
-                        options[key] = presets[key.to_s]
-                    elsif presets.has_key?(key.to_sym)
-                        options[key] = presets[key.to_sym]
-                    end
+        def config
+            out = {}
+            configuration.keys.each do |k|
+                if options.has_key?(k) && options["#{k}_given".to_sym]
+                    out[k] = options[k]
+                else
+                    out[k] = configuration[k]
+                end
+                out
+            end
+
+            options.keys.each do |k|
+                unless out.has_key?(k)
+                    out[k] = options[k]
                 end
             end
+
+            out
         end
 
         def commands(depth=0)
@@ -181,8 +197,6 @@ module Argumental
             else
                 options
                 _pre_validate
-
-                apply_defaults_to_options
 
                 if options[:man]
                     manual

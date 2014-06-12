@@ -10,7 +10,7 @@ class TestAction < Argumental::Action
     end
 
     def set_pre_validate(&block)
-        @pre_run_block = block
+        @block = block
     end
 
     def args=(new_args)
@@ -19,11 +19,10 @@ class TestAction < Argumental::Action
     end
 
     def pre_validate
-        @block.call if @block
+        instance_eval(&@block) if @block
     end
 
     def _run
-        @info = options
     end
 end
  

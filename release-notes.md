@@ -1,3 +1,11 @@
+Version 1.9.0
+-------------
+
+- Set version to 1.9.0 in lib/argumental/version.rb (55d3aba Anthony Roy)
+- Added new test. Fixed testaction class to fix other tests (d033780 Anthony Roy)
+- Added config functionality, fixed tests and removed an obsolete test (fcf4e89 Anthony Roy)
+- Example added for pre_validate bug (899b834 Anthony Roy)
+
 Version 1.8.0
 -------------
 
