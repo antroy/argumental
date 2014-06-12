@@ -55,7 +55,7 @@ class BobAction < Argumental::Action
     end
 
     def pre_validate
-        set_option_defaults({mandatory: true})
+        apply_config({mandatory: true})
     end
 
     def validate
