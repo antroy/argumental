@@ -23,7 +23,6 @@ class TestAction < Argumental::Action
     end
 
     def _run
-        @info = config
     end
 end
  

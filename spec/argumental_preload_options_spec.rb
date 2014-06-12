@@ -17,44 +17,41 @@ describe Argumental::Action do
         it 'should have no default options set' do
             subject.args = []
             subject.run
-            subject.info[:top].should == 'nothing'
+            subject.config[:top].should == 'nothing'
         end
 
         it 'should have default options set with strings as keys' do
             subject.args = []
             subject.apply_config({'top' => "A String Key"})
             subject.run
-            subject.info[:top].should == 'A String Key'
+            subject.config[:top].should == 'A String Key'
         end
 
         it 'should have default options set with symbols as keys' do
             subject.args = []
             subject.apply_config({top: 'A Symbol Key'})
             subject.run
-            subject.info[:top].should == 'A Symbol Key'
+            subject.config[:top].should == 'A Symbol Key'
         end
 
         it 'should have default options overridden when passed in on commandline' do
             subject.args = ['--top', 'Command line magic']
             subject.apply_config({top: 'A Symbol Key'})
             subject.run
-            subject.info[:top].should == 'Command line magic'
+            subject.config[:top].should == 'Command line magic'
         end
 
         it 'should have dynamic preset use depending on option input' do
-            puts "YYYYY"
             subject.args = ['--top', 'Command line magic']
             subject.set_pre_validate do
-                puts "RUNNING PreConfig"
                 opts = options
-                puts "OOO: #{options}"
                 if options[:top]
                     apply_config({sub1: 'Dynamically assigned'})
                 end
             end
             subject.run
-            subject.info[:top].should == 'Command line magic'
-            subject.info[:sub1].should == 'Dynamically assigned'
+            subject.config[:top].should == 'Command line magic'
+            subject.config[:sub1].should == 'Dynamically assigned'
         end
 
         it 'should have default options available from subcommands' do
@@ -62,7 +59,7 @@ describe Argumental::Action do
             subject.apply_config({top: 'A Symbol Key'})
             subject.run
             sub = subject.subactions.first
-            sub.info[:top].should == 'A Symbol Key'
+            sub.config[:top].should == 'A Symbol Key'
         end
 
         it 'should have default options overridden from commandline available from subcommands' do
@@ -70,19 +67,25 @@ describe Argumental::Action do
             subject.apply_config({top: 'A Symbol Key'})
             subject.run
             sub = subject.subactions.first
-            sub.info[:top].should == 'Bernard'
+            sub.config[:top].should == 'Bernard'
         end
 
         it 'should have default options work for subcommand options' do
-            subject.args = ['sub1', '--sub-one', 'Brian' ]
+            subject.args = ['sub1', '--sub-one']
             subject.apply_config({sub_one: 'A Symbol Sub One'})
             subject.run
+            subject.config[:sub_one].should == true
             sub = subject.subactions.first
-            sub.info[:sub_one].should == 'Brian'
+            sub.config[:sub_one].should == true
         end
 
         it 'should allow the setting of config not in the options' do
-
+            subject.args = ['sub1', '--sub-one']
+            subject.apply_config({invisible: 'A Symbol Sub One'})
+            subject.run
+            subject.config[:invisible].should == 'A Symbol Sub One'
+            sub = subject.subactions.first
+            sub.config[:invisible].should == 'A Symbol Sub One'
         end
     end
 end
