@@ -1,3 +1,11 @@
+Version 1.10.0
+--------------
+
+- Set version to 1.10.0 in lib/argumental/version.rb (eebaa4a Anthony Roy)
+- Tidied code (113cae0 Anthony Roy)
+- Manual now uses less and colour. (9e40e21 Anthony Roy)
+- Fixed tests (b3f95df Anthony Roy)
+
 Version 1.9.0
 -------------
 
