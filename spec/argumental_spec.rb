@@ -18,7 +18,7 @@ describe Argumental::Action do
             subject.run
             first_sub = subject.subactions.first
             puts "SUB: #{first_sub.name}"
-            first_sub.info[:sub_one].should == true
+            first_sub.options[:sub_one].should == true
         end
 
         it 'can see default options in the second subcommand' do
@@ -26,7 +26,7 @@ describe Argumental::Action do
             subject.run
             second_sub = subject.subactions[1]
             puts "SUB: #{second_sub.name}"
-            second_sub.info[:sub_two].should == true
+            second_sub.options[:sub_two].should == true
         end
 
         it 'runs the top level action with default options' do

@@ -19,32 +19,29 @@ describe Argumental::Action do
         it 'should have no options set when passed in on commandline' do
             subject.args = []
             subject.run
-            subject.info[:top].should == false
+            subject.options[:top].should == false
         end
 
         it 'should have the top option set when passed in on commandline' do
             subject.args = ['--top']
             subject.run
-            subject.info[:top].should == true
+            subject.options[:top].should == true
         end
 
         it 'should have the top option set when passed in on commandline' do
             subject.args = ['--top', 'sub1']
             subject.run
-            puts "ZZZ: #{subject.info}"
-            subject.subactions.first.info[:top].should == true
+            subject.subactions.first.options[:top].should == true
        end
 
         it 'should be turtles all the way down...' do
-            puts "Turtles"
             subject.args = ['--top', 'sub2', 'subsub2']
             subject.run
             second_child = subject.subactions[1]
             second_child.name.should == 'sub2'
             second_sub_child = second_child.subactions[1]
             second_sub_child.name.should == 'subsub2'
-            puts "ZZZ: #{second_sub_child.info}"
-            second_sub_child.info[:top].should == true
+            second_sub_child.options[:top].should == true
         end
     end
 end
