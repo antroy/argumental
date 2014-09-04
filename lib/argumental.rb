@@ -97,17 +97,41 @@ module Argumental
             @subactions.each{|act| act.commands(depth + 1)}
         end
 
+        def colourize(text, color_code); "\e[#{color_code}m#{text}\e[0m" end
+        
+        def green(text); colourize(text, 32) end
+        def ggreen(text); bold green text end
+        
+        def yellow(text); colourize(text, 33) end
+        def yyellow(text); bold yellow text end
+        
+        def blue(text); colourize(text, 34) end
+        def bblue(text); bold blue text end
+        
+        def bold(text); colourize(text, 1) end
+
         def manual(pre_commands=[])
+            out = ""
             command_list = pre_commands + [@name]
-            puts "=" * 40
             title = command_list.join(' / ').upcase
-            puts title
-            puts "-" * title.size
-            puts
-            puts "#{command_list.join(' <options> ')} <options>\n\n"
+            title = title + "\n" + "-" * title.size 
+            out = out + yyellow(title) + "\n"
+            command_syntax = "#{command_list.join(' <options> ')} <options>\n\n" + "\n"
+            out = out + bblue(command_syntax)
+            require 'stringio'
+            old_stdout = $stdout
+            $stdout = StringIO.new
             parser.educate
-            puts
-            @subactions.each{|act| act.manual(command_list)}
+            education = $stdout.string
+            
+            education =~ /(.*)(Sub Actions:)(.*)/m
+            education = $1.to_s + bblue($2.to_s) + blue($3.to_s)
+
+            out = out + education
+            $stdout = old_stdout
+            out = out + "\n"
+            @subactions.each{|act| out = out + act.manual(command_list)}
+            out
         end
 
         def parser(parent_opt_defs = [])
@@ -199,7 +223,9 @@ module Argumental
                 _pre_validate
 
                 if options[:man]
-                    manual
+                    String.colour_on = true
+                    out = manual
+                    IO.popen("less -R", "w") { |f| f.puts out }
                     exit 0
                 end
 

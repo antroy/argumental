@@ -104,12 +104,14 @@ describe Argumental::Action do
     end
 
     context '#manual' do
-        subject { @act = TopAction.new ['sub_action', 'sub_sub_action'] }
+        subject { 
+            TopAction.new ['sub_action', 'sub_sub_action']
+        }
         it 'contains its own name' do
-            capture_stdout {subject.manual }.should include('top_action')
+            subject.manual.should include('top_action')
         end
         it 'contains its subcommands' do
-            capture_stdout {subject.manual }.should include('sub_sub_action')
+            subject.manual.should include('sub_sub_action')
         end
     end
 
