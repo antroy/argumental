@@ -98,16 +98,12 @@ module Argumental
         end
 
         def colourize(text, color_code); "\e[#{color_code}m#{text}\e[0m" end
-        
         def green(text); colourize(text, 32) end
         def ggreen(text); bold green text end
-        
         def yellow(text); colourize(text, 33) end
         def yyellow(text); bold yellow text end
-        
         def blue(text); colourize(text, 34) end
         def bblue(text); bold blue text end
-        
         def bold(text); colourize(text, 1) end
 
         def manual(pre_commands=[])
@@ -122,14 +118,10 @@ module Argumental
             old_stdout = $stdout
             $stdout = StringIO.new
             parser.educate
-            education = $stdout.string
-            
-            education =~ /(.*)(Sub Actions:)(.*)/m
+            $stdout.string =~ /(.*)(Sub Actions:)(.*)/m
             education = $1.to_s + bblue($2.to_s) + blue($3.to_s)
-
-            out = out + education
             $stdout = old_stdout
-            out = out + "\n"
+            out = out + education + "\n"
             @subactions.each{|act| out = out + act.manual(command_list)}
             out
         end
