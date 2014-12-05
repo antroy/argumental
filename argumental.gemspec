@@ -8,7 +8,7 @@ require 'rake'
 Gem::Specification.new do |s|
     s.name        = 'argumental'
     s.version     = Argumental::VERSION
-    s.date        = '2014-09-04'
+    s.date        = '2014-12-05'
     s.summary     = 'Extend trollop to add sub-commands'
     s.authors     = ['Anthony Roy', 'Robin Bowes']
     s.description = 'Easily create CLI apps with command suites'
