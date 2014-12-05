@@ -66,6 +66,14 @@ module Argumental
             @parent ? @parent.configuration : @configuration
         end
 
+        def configuration=(hash)
+            if @parent
+                @parent.configuration = hash
+            else
+                @configuration = hash
+            end
+        end
+
         def option_definitions
             out = @option_definitions.map{|o| o.clone}
             out.concat @parent.option_definitions if @parent

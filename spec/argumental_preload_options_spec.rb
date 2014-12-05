@@ -87,5 +87,17 @@ describe Argumental::Action do
             sub = subject.subactions.first
             sub.config[:invisible].should == 'A Symbol Sub One'
         end
+
+        it 'config set directly is not affected by options' do
+            subject.args = ['sub1', '--sub-one']
+            subject.configuration = {'my' => 'new', 'clean' => 'hash'}
+            subject.run
+            sub = subject.subactions.first
+
+            puts sub.configuration
+            sub.configuration[:invisible].should == nil
+            sub.configuration['my'].should == 'new'
+            sub.configuration['clean'].should == 'hash'
+        end
     end
 end
