@@ -1,3 +1,12 @@
+Version 1.11.0
+--------------
+
+Released: 05 Dec 2014 12:57
+
+- Set version to 1.11.0 in lib/argumental/version.rb (a7bff4e Anthony Roy)
+- Added tags to gitignore (b9f3cf8 Anthony Roy)
+- Added facility to set a configuration directly (430927d Anthony Roy)
+
 Version 1.10.0
 --------------
 
