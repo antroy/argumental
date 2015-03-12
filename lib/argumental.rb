@@ -35,7 +35,7 @@ module Argumental
 
         def version
             if @parent
-                @parent.version 
+                @parent.version
             else
                 @version
             end
@@ -51,7 +51,7 @@ module Argumental
         end
 
         def symbolize(hash)
-            hash.inject({}) do |out,(k,v)| 
+            hash.inject({}) do |out,(k,v)|
                 out[k.to_sym] = v
                 out
             end
@@ -118,18 +118,21 @@ module Argumental
             out = ""
             command_list = pre_commands + [@name]
             title = command_list.join(' / ').upcase
-            title = title + "\n" + "-" * title.size 
+            title = title + "\n" + "-" * title.size
             out = out + yyellow(title) + "\n"
-            command_syntax = "#{command_list.join(' <options> ')} <options>\n\n" + "\n"
+            command_syntax = ("#{command_list.join(' <options> ')} <options>\n" + "\n")
             out = out + bblue(command_syntax)
             require 'stringio'
             old_stdout = $stdout
             $stdout = StringIO.new
             parser.educate
-            $stdout.string =~ /(.*)(Sub Actions:)(.*)/m
-            education = $1.to_s + bblue($2.to_s) + blue($3.to_s)
+            if $stdout.string =~ /(.*)(Sub Actions:)(.*)/m
+             education = $1.to_s + bblue($2.to_s) + blue($3.to_s)
+            else
+              education= $stdout.string
+            end
             $stdout = old_stdout
-            out = out + education + "\n"
+            out = out + education.strip + "\n"
             @subactions.each{|act| out = out + act.manual(command_list)}
             out
         end
