@@ -1,3 +1,11 @@
+Version 1.12.0
+--------------
+
+Released: 12 Mar 2015 16:54
+
+- Set version to 1.12.0 in lib/argumental/version.rb (67d7179 David Collom)
+- fix sub action output not being displayed during --man option (531a701 David Collom)
+
 Version 1.11.0
 --------------
 
