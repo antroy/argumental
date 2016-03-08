@@ -114,6 +114,25 @@ module Argumental
         def bblue(text); bold blue text end
         def bold(text); colourize(text, 1) end
 
+        def autocompletion(pre_commands=[])
+            out = []
+            old_stdout = $stdout
+            $stdout = StringIO.new
+            parser.educate
+            lines = $stdout.string.split("\n")
+            
+            lines.each do |line|
+                if line =~ /.*Sub Actions:(.*)/m
+                    out.concat $1.split(',').map(&:strip)
+                end
+                if line =~ /(--\w+)/m
+                    out << $1.to_s
+                end
+            end
+            $stdout = old_stdout
+            out.join(" ")
+        end
+
         def manual(pre_commands=[])
             out = ""
             command_list = pre_commands + [@name]
@@ -133,7 +152,7 @@ module Argumental
             end
             $stdout = old_stdout
             out = out + education.strip + "\n"
-            @subactions.each{|act| out = out + act.manual(command_list)}
+            @subactions.each{|act| out = out + act.manual(Command_list)}
             out
         end
 
@@ -153,6 +172,7 @@ module Argumental
 
                 opt :commands, "Display all commands", short: :none
                 opt :man, "Display manual page", short: :none
+                opt :completion, "Display autocompletion options", short: :none
 
                 opt_defs.each do |option|
                     name = option[:name]
@@ -229,6 +249,10 @@ module Argumental
                     String.colour_on = true
                     out = manual
                     IO.popen("less -R", "w") { |f| f.puts out }
+                    exit 0
+                elsif options[:completion]
+                    String.colour_on = false
+                    puts autocompletion
                     exit 0
                 end
 
