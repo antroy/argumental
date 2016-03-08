@@ -152,7 +152,7 @@ module Argumental
             end
             $stdout = old_stdout
             out = out + education.strip + "\n"
-            @subactions.each{|act| out = out + act.manual(Command_list)}
+            @subactions.each{|act| out = out + act.manual(command_list)}
             out
         end
 
