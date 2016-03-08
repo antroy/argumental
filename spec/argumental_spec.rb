@@ -115,6 +115,18 @@ describe Argumental::Action do
         end
     end
 
+    context '#completion' do
+        subject { 
+            TopAction.new ['sub_action', 'sub_sub_action']
+        }
+        it 'contains its args' do
+            subject.autocompletion.should include('--man')
+        end
+        it 'contains its immediate subcommands' do
+            subject.autocompletion.should include('sub_action')
+        end
+    end
+
     context '#run' do
         subject { @act = TopAction.new ['sub_action', 'sub_sub_action'] }
         context 'with man option' do
