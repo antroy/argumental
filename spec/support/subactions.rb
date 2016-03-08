@@ -2,6 +2,9 @@ class SubSubAction < Argumental::Action
     attr_reader :info, :subactions
     def initialize(args)
         super "sub_sub_action", "This should be deeply nested", args
+        @option_definitions = [
+            {name: :sub_sub_do_stuff, description: "Set if you want to do stuff"}
+        ]
         @info = nil
     end
 
@@ -15,6 +18,9 @@ class SubAction < Argumental::Action
     attr_reader :info, :subactions
     def initialize(args)
         super "sub_action", "This should be nested", args
+        @option_definitions = [
+            {name: :sub_do_stuff, short: '-s', description: "Set if you want to do stuff"}
+        ]
         add_subaction SubSubAction.new(args)
         @info = nil
     end

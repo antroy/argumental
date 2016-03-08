@@ -2,7 +2,7 @@ require 'trollop'
 
 module Argumental
     class Action
-        attr_reader :name
+        attr_reader :name, :subactions
         attr_writer :option_definitions
         attr_accessor :parent
 
@@ -13,9 +13,9 @@ module Argumental
             @subactions = []
             @_args = args
             @version = version
-            @completion_mode = false
             @parent = nil
             @configuration = {}
+            @colour_on = true
         end
 
         def args
@@ -74,9 +74,21 @@ module Argumental
             end
         end
 
+        def common_options
+            [
+                {name: :commands, description: "Display all commands", short: :none},
+                {name: :man, description: "Display manual page", short: :none},
+                {name: :completion, description: "Display autocompletion options", short: :none}
+            ]
+        end
+
         def option_definitions
             out = @option_definitions.map{|o| o.clone}
-            out.concat @parent.option_definitions if @parent
+            if @parent
+                out.concat @parent.option_definitions
+            else
+                out.concat common_options
+            end
             out
         end
 
@@ -105,7 +117,7 @@ module Argumental
             @subactions.each{|act| act.commands(depth + 1)}
         end
 
-        def colourize(text, color_code); "\e[#{color_code}m#{text}\e[0m" end
+        def colourize(text, color_code); @colour_on ? "\e[#{color_code}m#{text}\e[0m" : text end
         def green(text); colourize(text, 32) end
         def ggreen(text); bold green text end
         def yellow(text); colourize(text, 33) end
@@ -115,21 +127,10 @@ module Argumental
         def bold(text); colourize(text, 1) end
 
         def autocompletion(pre_commands=[])
-            out = []
-            old_stdout = $stdout
-            $stdout = StringIO.new
-            parser.educate
-            lines = $stdout.string.split("\n")
-            
-            lines.each do |line|
-                if line =~ /.*Sub Actions:(.*)/m
-                    out.concat $1.split(',').map(&:strip)
-                end
-                if line =~ /(--[\w-]+)/m
-                    out << $1.to_s
-                end
+            out = option_definitions.map do |opt|
+                "--#{opt[:name].to_s.gsub(/_/, '-')}"
             end
-            $stdout = old_stdout
+            out.concat @subactions.map{|sub| sub.name}
             out.join(" ")
         end
 
@@ -157,7 +158,6 @@ module Argumental
         end
 
         def parser(parent_opt_defs = [])
-
             return @parser if @parser
 
             help_text = @help
@@ -167,12 +167,8 @@ module Argumental
             opt_defs = option_definitions
 
             @parser = Trollop::Parser.new do
-                banner "#{help_text}#{sub_help}\n " if help_text and not @completion_mode
+                banner "#{help_text}#{sub_help}\n " if help_text
                 version app_version if app_version
-
-                opt :commands, "Display all commands", short: :none
-                opt :man, "Display manual page", short: :none
-                opt :completion, "Display autocompletion options", short: :none
 
                 opt_defs.each do |option|
                     name = option[:name]
@@ -242,16 +238,15 @@ module Argumental
             if current_subaction
                 current_subaction.run
             else
-                options
                 _pre_validate
 
                 if options[:man]
-                    String.colour_on = true
+                    @colour_on = true
                     out = manual
                     IO.popen("less -R", "w") { |f| f.puts out }
                     exit 0
                 elsif options[:completion]
-                    String.colour_on = false
+                    @colour_on = false
                     puts autocompletion
                     exit 0
                 end
@@ -262,7 +257,7 @@ module Argumental
                 end
 
                 begin
-                    _validate unless @completion_mode
+                    _validate
                 rescue StandardError => ex
                     puts "\nERROR: #{ex.message}\n\n"
                     puts "Usage:\n"

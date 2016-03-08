@@ -124,10 +124,12 @@ describe Argumental::Action do
             subject.autocompletion.should include('--completion')
             subject.autocompletion.should include('--do-stuff')
         end
-        it 'contains its args' do
-            subject.autocompletion.should include('--man')
-            subject.autocompletion.should include('--completion')
-            subject.autocompletion.should include('--do-stuff')
+        it 'subaction contains its and its parents args' do
+            sub = subject.subactions[0]
+            sub.autocompletion.should include('--man')
+            sub.autocompletion.should include('--completion')
+            sub.autocompletion.should include('--do-stuff')
+            sub.autocompletion.should include('--sub-do-stuff')
         end
         it 'contains its immediate subcommands' do
             subject.autocompletion.should include('sub_action')
@@ -135,41 +137,29 @@ describe Argumental::Action do
     end
 
     context '#run' do
-        subject { @act = TopAction.new ['sub_action', 'sub_sub_action'] }
         context 'with man option' do
-            # Implementation specific - I can't change implementation without this breaking.
+            subject { TopAction.new ['sub_action', 'sub_sub_action', '--man'] }
+            # Can't work out how to make this work with the shonky 
+            # shell out to less...
             xit 'calls manual' do
-                allow(subject).to receive(:options).and_return({man:true})
                 subject.should_receive(:manual)
                 subject.should_not_receive(:_run)
                 begin 
-                    capture_stdout {subject.run}
+                    subject.run
                 rescue SystemExit #required to allow for exit
                 end
             end
         end
         context 'with commands option' do
+            subject { TopAction.new ['sub_action', 'sub_sub_action', '--commands'] }
             # Again - implementation specific. Fix.
-            xit 'calls commands' do
-                subject.should_receive(:options).at_least(:once).and_return({commands:true})
-                subject.should_receive(:commands).with(no_args)
+            it 'calls commands' do
+                subject.subactions[0].subactions[0].should_receive(:commands)
                 subject.should_not_receive(:_run)
                 begin 
-                    capture_stdout {subject.run}
+                    subject.run
                 rescue SystemExit #required to allow for exit
                 end
-            end
-        end
-    end
-
-    context '#options' do
-        subject { @act = TopAction.new ['sub_action', 'sub_sub_action'] }
-        context 'invalid validation' do
-            xit 'raise Trollop:HelpNeeded' do
-                $stdout = StringIO.new
-                subject.should_receive(:validate).and_raise(RuntimeError)
-                subject.instance_variable_get(:@completion_mode).should == false
-                lambda { subject.options}.should raise_exception(Trollop::HelpNeeded)
             end
         end
     end
