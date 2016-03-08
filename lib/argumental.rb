@@ -125,7 +125,7 @@ module Argumental
                 if line =~ /.*Sub Actions:(.*)/m
                     out.concat $1.split(',').map(&:strip)
                 end
-                if line =~ /(--\w+)/m
+                if line =~ /(--[\w-]+)/m
                     out << $1.to_s
                 end
             end

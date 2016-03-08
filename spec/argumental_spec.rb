@@ -121,6 +121,13 @@ describe Argumental::Action do
         }
         it 'contains its args' do
             subject.autocompletion.should include('--man')
+            subject.autocompletion.should include('--completion')
+            subject.autocompletion.should include('--do-stuff')
+        end
+        it 'contains its args' do
+            subject.autocompletion.should include('--man')
+            subject.autocompletion.should include('--completion')
+            subject.autocompletion.should include('--do-stuff')
         end
         it 'contains its immediate subcommands' do
             subject.autocompletion.should include('sub_action')
